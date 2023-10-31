@@ -16,7 +16,7 @@ running = True
 specialRelativity = False
 startNova = False
 starBirth = False
-loadFile = False
+loadFile = True
 stairFalling = False
 recording = False
 clockSim = False
@@ -264,83 +264,71 @@ class Point(pygame.sprite.Sprite):
             # self.rects[po] = self.points[po].surf.get_rect(center=(self.points[po]['coordinates'][0], self.points[po]['coordinates'][1]))
 
             if not self.points[po]['stopState']:
-                pos = self.points[po]['coordinates']
-                oldPos = self.points[po]['oldCoordinates']
-
-                # calculating velocity
-                self.points[po]['velocities'][0] = pos[0] - oldPos[0]
-                self.points[po]['velocities'][1] = pos[1] - oldPos[1]
-                self.simulateXY(po, 0)
-                self.simulateXY(po, 1)
-                # moving the point
-
-                self.points[po]['oldCoordinates'] = pos
-                self.points[po]['coordinates'] = [pos[0] + self.points[po]['velocities'][0], pos[1] + self.points[po]['velocities'][1]]
-                self.updateDrag('gas', po, None)
-                if self.blackHole:
-                    self.absorb(po, 0)
-                if self.whiteHole:
-                    self.repel(po, 0)
-
                 # detect for collisions with collision sprites (solid)
                 for collisions in range(len(collisionSprites)):
                     if self.points[po]['selfPos'].colliderect(collisionSprites[collisions]):
                         # pygame.mixer.music.load(soundFile)
                         # pygame.mixer.music.play()
                         if abs(self.points[po]['coordinates'][0] - collisionSprites[collisions].rect.left) < self.collisionTolerance:
-                            self.points[po]['coordinates'][0] = collisionSprites[collisions].rect.left - self.points[po]['radius']
-                            self.points[po]['energies'][0] *= collisionSprites[collisions].workFunction
-                            self.points[po]['velocities'][0] = math.sqrt((self.points[po]['energies'][0] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
+                            self.points[po]['coordinates'][0] = self.points[po]['oldCoordinates'][0]
+                            # self.points[po]['coordinates'][0] = collisionSprites[collisions].rect.left - self.points[po]['radius']
+                            # exit()
+                            # self.points[po]['energies'][0] *= collisionSprites[collisions].workFunction
+                            # self.points[po]['velocities'][0] = math.sqrt((self.points[po]['energies'][0] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
                             self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] + self.points[po]['velocities'][0]
                             # used for applying friction
                             self.points[po]['collidingWith'] = collisions
                         elif abs(self.points[po]['coordinates'][0] - collisionSprites[collisions].rect.right) < self.collisionTolerance:
-                            self.points[po]['coordinates'][0] = collisionSprites[collisions].rect.right + self.points[po]['radius']
-                            self.points[po]['energies'][0] *= collisionSprites[collisions].workFunction
-                            self.points[po]['velocities'][0] = -math.sqrt((self.points[po]['energies'][0] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
+                            self.points[po]['coordinates'][0] = self.points[po]['oldCoordinates'][0]
+                            # self.points[po]['coordinates'][0] = collisionSprites[collisions].rect.right + self.points[po]['radius']
+                            # self.points[po]['energies'][0] *= collisionSprites[collisions].workFunction
+                            # self.points[po]['velocities'][0] = -math.sqrt((self.points[po]['energies'][0] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
                             self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] + self.points[po]['velocities'][0]
                             # used for applying friction
                             self.points[po]['collidingWith'] = collisions
 
                         if abs(self.points[po]['coordinates'][1] - collisionSprites[collisions].rect.top) < self.collisionTolerance:
-                            self.points[po]['coordinates'][1] = collisionSprites[collisions].rect.top - self.points[po]['radius']
-                            self.points[po]['energies'][1] *= collisionSprites[collisions].workFunction
-                            self.points[po]['velocities'][1] = math.sqrt((self.points[po]['energies'][1] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
+                            self.points[po]['coordinates'][1] = self.points[po]['oldCoordinates'][1]
+                            # self.points[po]['coordinates'][1] = collisionSprites[collisions].rect.top - self.points[po]['radius']
+                            # self.points[po]['energies'][1] *= collisionSprites[collisions].workFunction
+                            # self.points[po]['velocities'][1] = math.sqrt((self.points[po]['energies'][1] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
                             self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] + self.points[po]['velocities'][1]
                             # used for applying friction
                             self.points[po]['collidingWith'] = collisions
                         elif abs(self.points[po]['coordinates'][1] - collisionSprites[collisions].rect.bottom) < self.collisionTolerance:
-                            self.points[po]['coordinates'][1] = collisionSprites[collisions].rect.bottom + self.points[po]['radius']
-                            self.points[po]['energies'][1] *= collisionSprites[collisions].workFunction
-                            self.points[po]['velocities'][1] = -math.sqrt((self.points[po]['energies'][1] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
+                            self.points[po]['coordinates'][1] = self.points[po]['oldCoordinates'][1]
+                            # self.points[po]['coordinates'][1] = collisionSprites[collisions].rect.bottom + self.points[po]['radius']
+                            # self.points[po]['energies'][1] *= collisionSprites[collisions].workFunction
+                            # self.points[po]['velocities'][1] = -math.sqrt((self.points[po]['energies'][1] * 2) / self.points[po]['mass']) * self.points[po]['bounciness']
                             self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] + self.points[po]['velocities'][1]
                             # used for applying friction
                             self.points[po]['collidingWith'] = collisions
                         self.points[po]['collided'] += 1
 
-                        # for collisions in range(len(self.selfPos)):
-                        #     # if pygame.sprite.collide_circle(self.points[po]['selfPos'], self.selfPos[collisions]):
-                        #     if self.points[po]['selfPos'].colliderect(self.selfPos[collisions]):
-                        #         if abs(self.points[po]['selfPos'].right - self.selfPos[collisions].left) < self.collisionTolerance:
-                        #             self.points[po]['selfPos'].right = self.selfPos[collisions].left - self.points[po]['radius']
-                        #             self.points[po]['velocities'][0] = -self.points[po]['velocities'][0]
-                        #             self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] + self.points[po]['velocities'][0]
-                        #         elif abs(self.points[po]['selfPos'].left - self.selfPos[collisions].right) < self.collisionTolerance:
-                        #             self.points[po]['selfPos'].left = self.selfPos[collisions].right + self.points[po]['radius']
-                        #             self.points[po]['velocities'][0] = -self.points[po]['velocities'][0]
-                        #             self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] + self.points[po]['velocities'][0]
-                        #
-                        #         if abs(self.points[po]['selfPos'].bottom - self.selfPos[collisions].top) < self.collisionTolerance:
-                        #             self.points[po]['selfPos'].bottom = self.selfPos[collisions].top - self.points[po]['radius']
-                        #             self.points[po]['velocities'][1] = -self.points[po]['velocities'][1]
-                        #             self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] + self.points[po]['velocities'][1]
-                        #         elif abs(self.points[po]['selfPos'].top - self.selfPos[collisions].bottom) < self.collisionTolerance:
-                        #             self.points[po]['selfPos'].top = self.selfPos[collisions].bottom + self.points[po]['radius']
-                        #             self.points[po]['velocities'][1] = -self.points[po]['velocities'][1]
-                        #             self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] + self.points[po]['velocities'][1]
+                for collision in range(len(self.points)):
+                    if (distance(self.points[po], self.points[collision]) <= (self.points[po]['radius'] + self.points[collision]['radius'])) and (po != collision):
+                        try:
+                            alpha = math.atan((self.points[collision]['coordinates'][1] - self.points[po]['coordinates'][1]) / (self.points[collision]['coordinates'][0] - self.points[po]['coordinates'][0]))
+                        except ZeroDivisionError:
+                            alpha = 0
+                        resultantVelocity = math.sqrt((self.points[po]['velocities'][0] ** 2) + (self.points[po]['velocities'][1] ** 2))
+                        pointOne = self.points[po]['coordinates']
+                        pointTwo = self.points[collision]['coordinates']
+                        if pointOne[0] < pointTwo[0]:
+                            self.points[po]['coordinates'][0] = self.points[po]['oldCoordinates'][0]
+                            self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] + (resultantVelocity * math.cos(alpha))
+                            self.points[po]['coordinates'][1] = self.points[po]['oldCoordinates'][1]
+                            self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] + (resultantVelocity * math.sin(alpha))
+                        else:
+                            self.points[po]['coordinates'][0] = self.points[po]['oldCoordinates'][0]
+                            self.points[po]['oldCoordinates'][0] = self.points[po]['coordinates'][0] - (resultantVelocity * math.cos(alpha))
+                            self.points[po]['coordinates'][1] = self.points[po]['oldCoordinates'][1]
+                            self.points[po]['oldCoordinates'][1] = self.points[po]['coordinates'][1] - (resultantVelocity * math.sin(alpha))
+                        # self.points[po]['velocities'] = [resultantVelocity * math.cos(alpha), resultantVelocity * math.sin(alpha)]
                         # apply friction
                         if (self.points[po]['selfPos'].bottom <= collisionSprites[self.points[po]['collidingWith']].rect.top) and (self.points[po]['collidingWith'] != -1):
-                            self.updateFriction(po)
+                            # self.updateFriction(po)
+                            None
                         else:
                             self.points[po]['frictions'][0] = 0
                             self.points[po]['collidingWith'] = -1
@@ -361,6 +349,25 @@ class Point(pygame.sprite.Sprite):
                         self.points[po]['upthrusts'][1] = 0
                         self.points[po]['liquidDrags'][1] = 0
                         self.points[po]['liquidDrags'][0] = 0
+
+                # Verlet integration
+                pos = self.points[po]['coordinates']
+                oldPos = self.points[po]['oldCoordinates']
+
+                # calculating velocity
+                self.points[po]['velocities'][0] = pos[0] - oldPos[0]
+                self.points[po]['velocities'][1] = pos[1] - oldPos[1]
+                self.simulateXY(po, 0)
+                self.simulateXY(po, 1)
+                # moving the point
+
+                self.points[po]['oldCoordinates'] = pos
+                self.points[po]['coordinates'] = [pos[0] + self.points[po]['velocities'][0], pos[1] + self.points[po]['velocities'][1]]
+                self.updateDrag('gas', po, None)
+                if self.blackHole:
+                    self.absorb(po, 0)
+                if self.whiteHole:
+                    self.repel(po, 0)
 
     def updateDrag(self, collisionType, counter, lCounter):
         if collisionType == 'liquid':
@@ -423,7 +430,7 @@ class Point(pygame.sprite.Sprite):
 
     def updateFriction(self, counter):
         # friction from the ground
-        print('yay')
+        print('friction')
         if self.points[counter]['velocities'][0] > 0:
             self.points[counter]['frictions'][0] = self.xFrictionConst * self.points[counter]['weight']
         elif self.points[counter]['velocities'][0] < 0:
@@ -633,7 +640,6 @@ if loadFile:
 
     cFile.box(points=cFile.points, joint=stuff['joints'])
     objectList = {'objects': [cFile], 'sprites': [cFile.box(joint=stuff['joints'], points=cFile.points)], 'drags': [len(cFile.points)]}
-
 
 if startNova:
     supernova = Point(showJoints=True, gasDensity=0, damping=0.001)
