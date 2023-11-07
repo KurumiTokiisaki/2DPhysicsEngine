@@ -4,3 +4,4 @@ Public "branch" (actually a copy) of my private 2D Physics Engine repository
 # spriteCreator.py - Freely create points & joints and export it as a .cloth file
 # ragdoll.cloth - Human ragdoll preset
 # testCloth.cloth - File that transfers point & joint details from spriteCreator.py
+# Runthrough of this program: https://youtu.be/UUhNwX6w0Yw
